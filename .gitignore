@@ -1,0 +1,159 @@
+# =========================
+# VISION PILOT - .gitignore
+# =========================
+
+
+# =========================
+# ML MODEL WEIGHTS
+# =========================
+*.pth
+*.onnx
+*.pt
+*.h5
+*.hdf5
+*.ckpt
+*.bin
+
+
+# =========================
+# VIDEOS / RECORDINGS
+# =========================
+*.mp4
+*.avi
+*.mov
+*.mkv
+*.webm
+
+
+# =========================
+# ARCHIVES / COMPRESSED FILES
+# =========================
+*.zip
+*.rar
+*.7z
+*.tar
+*.gz
+
+
+# =========================
+# PYTHON
+# =========================
+__pycache__/
+*.py[cod]
+*.pyo
+
+.venv/
+venv/
+env/
+ENV/
+
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+
+# =========================
+# C / C++ BUILD FILES
+# =========================
+*.o
+*.obj
+*.so
+*.dll
+*.dylib
+*.a
+*.lib
+*.exe
+
+
+# =========================
+# BUILD / GENERATED FILES
+# =========================
+build/
+dist/
+out/
+target/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+
+# =========================
+# PYTHON DISTRIBUTION
+# =========================
+*.egg
+*.egg-info/
+.eggs/
+develop-eggs/
+pip-wheel-metadata/
+
+
+# =========================
+# IDE / EDITOR
+# =========================
+.vscode/
+.idea/
+
+*.swp
+*.swo
+*~
+
+
+# =========================
+# OS FILES
+# =========================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+
+# =========================
+# LOGS / TEMPORARY FILES
+# =========================
+*.log
+*.tmp
+*.temp
+*.cache
+
+
+# =========================
+# JUPYTER
+# =========================
+.ipynb_checkpoints/
+
+
+# =========================
+# ROS / AUTONOMOUS DRIVING
+# =========================
+log/
+logs/
+rosbag/
+rosbags/
+*.bag
+*.db3
+
+
+# =========================
+# GENERATED DATA / OUTPUTS
+# =========================
+*.csv
+*.pkl
+*.pickle
+*.npy
+*.npz
+
+
+# =========================
+# LOCAL TEST OUTPUTS
+# =========================
+runs/
+outputs/
+results/
+
+
+# =========================
+# NOTE:
+# GIF files are intentionally NOT ignored.
+# They are used by multiple README files
+# throughout this repository.
+# =========================
