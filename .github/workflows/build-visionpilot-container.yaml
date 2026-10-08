@@ -2,6 +2,7 @@ name: Build VisionPilot Container
 
 env:
   DEFAULT_ONNXRUNTIME_VERSION: "1.22.0"
+  GHCR_IMAGE: ghcr.io/khushi-kumari030/visionpilot
 
 on:
   workflow_dispatch:
@@ -10,6 +11,7 @@ on:
         description: "ONNX Runtime version"
         required: true
         default: "1.22.0"
+
   push:
     branches:
       - main
@@ -23,6 +25,7 @@ permissions:
   packages: write
   attestations: write
   id-token: write
+
 jobs:
   build:
     strategy:
@@ -33,12 +36,14 @@ jobs:
             runner: ubuntu-22.04
             arch-platform: linux/amd64
             arch: x64
+
           - platform: arm64
             runner: ubuntu-22.04-arm
             arch-platform: linux/arm64
             arch: aarch64
 
     runs-on: ${{ matrix.runner }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -69,20 +74,25 @@ jobs:
           platforms: ${{ matrix.arch-platform }}
           context: .
           file: ./VisionPilot/SDV/OpenADKit/Docker/Dockerfile
+
           build-args: |
             ARCH=${{ matrix.arch }}
             ONNXRUNTIME_VERSION=${{ inputs.onnxruntime-version || env.DEFAULT_ONNXRUNTIME_VERSION }}
+
           push: true
           provenance: false
+
           cache-from: type=gha,scope=${{ matrix.platform }}
           cache-to: type=gha,mode=max,scope=${{ matrix.platform }}
+
           tags: |
-            ghcr.io/${{ github.repository_owner }}/visionpilot:${{ github.sha }}-${{ matrix.platform }}
-            ghcr.io/${{ github.repository_owner }}/visionpilot:${{ steps.date.outputs.date }}-${{ matrix.platform }}
+            ${{ env.GHCR_IMAGE }}:${{ github.sha }}-${{ matrix.platform }}
+            ${{ env.GHCR_IMAGE }}:${{ steps.date.outputs.date }}-${{ matrix.platform }}
 
   manifest:
     needs: build
     runs-on: ubuntu-22.04
+
     steps:
       - name: Set git config
         uses: autowarefoundation/autoware-github-actions/set-git-config@v1
@@ -103,17 +113,20 @@ jobs:
 
       - name: Create and push multi-arch manifest
         run: |
-          docker manifest create ghcr.io/${{ github.repository_owner }}/visionpilot:${{ github.sha }} \
-            ghcr.io/${{ github.repository_owner }}/visionpilot:${{ github.sha }}-amd64 \
-            ghcr.io/${{ github.repository_owner }}/visionpilot:${{ github.sha }}-arm64
-          docker manifest push ghcr.io/${{ github.repository_owner }}/visionpilot:${{ github.sha }}
+          docker manifest create ${{ env.GHCR_IMAGE }}:${{ github.sha }} \
+            ${{ env.GHCR_IMAGE }}:${{ github.sha }}-amd64 \
+            ${{ env.GHCR_IMAGE }}:${{ github.sha }}-arm64
 
-          docker manifest create ghcr.io/${{ github.repository_owner }}/visionpilot:${{ steps.date.outputs.date }} \
-            ghcr.io/${{ github.repository_owner }}/visionpilot:${{ steps.date.outputs.date }}-amd64 \
-            ghcr.io/${{ github.repository_owner }}/visionpilot:${{ steps.date.outputs.date }}-arm64
-          docker manifest push ghcr.io/${{ github.repository_owner }}/visionpilot:${{ steps.date.outputs.date }}
+          docker manifest push ${{ env.GHCR_IMAGE }}:${{ github.sha }}
 
-          docker manifest create ghcr.io/${{ github.repository_owner }}/visionpilot:latest \
-            ghcr.io/${{ github.repository_owner }}/visionpilot:${{ github.sha }}-amd64 \
-            ghcr.io/${{ github.repository_owner }}/visionpilot:${{ github.sha }}-arm64
-          docker manifest push ghcr.io/${{ github.repository_owner }}/visionpilot:latest
+          docker manifest create ${{ env.GHCR_IMAGE }}:${{ steps.date.outputs.date }} \
+            ${{ env.GHCR_IMAGE }}:${{ steps.date.outputs.date }}-amd64 \
+            ${{ env.GHCR_IMAGE }}:${{ steps.date.outputs.date }}-arm64
+
+          docker manifest push ${{ env.GHCR_IMAGE }}:${{ steps.date.outputs.date }}
+
+          docker manifest create ${{ env.GHCR_IMAGE }}:latest \
+            ${{ env.GHCR_IMAGE }}:${{ github.sha }}-amd64 \
+            ${{ env.GHCR_IMAGE }}:${{ github.sha }}-arm64
+
+          docker manifest push ${{ env.GHCR_IMAGE }}:latest
